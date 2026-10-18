@@ -1,135 +1,140 @@
-# Sift
+<p align="center">
+  <img src="src-tauri/icons/icon.png" width="112" height="112" alt="Sift app icon">
+</p>
 
-Sift is a desktop app for macOS and Windows. It removes the chats in a Telegram account whose only message is the "joined Telegram" notice, and leaves real conversations alone.
+<h1 align="center">Sift</h1>
+
+<p align="center">
+  <strong>Clear out the Telegram chats that hold only a "joined Telegram" notice.</strong><br>
+  Real conversations stay untouched, and so do your contacts.
+</p>
+
+<p align="center">
+  <a href="https://github.com/hystericmoon/sift/releases/latest"><img alt="Download for macOS" src="https://img.shields.io/badge/macOS-Download%20.dmg-C6F432?style=for-the-badge&labelColor=17191B&logo=apple&logoColor=ECEDEE"></a>
+  <a href="https://github.com/hystericmoon/sift/releases/latest"><img alt="Download for Windows" src="https://img.shields.io/badge/Windows-Download%20.exe-C6F432?style=for-the-badge&labelColor=17191B&logo=windows&logoColor=ECEDEE"></a>
+</p>
+
+<p align="center">
+  <sub>Free and open source (MIT) · macOS 12+ and Windows 10+ · Sift uses the Telegram API and is not affiliated with Telegram.</sub>
+</p>
+
+<br>
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/light-1-intro.png">
+        <img src="docs/screenshots/dark-1-intro.png" alt="Intro screen: Clear out chats that hold only a join notice">
+      </picture>
+      <br><sub><b>1.</b> Log in once</sub>
+    </td>
+    <td align="center" width="33%">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/light-3-results.png">
+        <img src="docs/screenshots/dark-3-results.png" alt="Results: 165 chats that hold only a join notice, all selected">
+      </picture>
+      <br><sub><b>2.</b> Review what it found</sub>
+    </td>
+    <td align="center" width="33%">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/light-4-confirm.png">
+        <img src="docs/screenshots/dark-4-confirm.png" alt="Confirm dialog: Delete 165 chats?">
+      </picture>
+      <br><sub><b>3.</b> Confirm, knowing what stays</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/light-2-scan.png">
+        <img src="docs/screenshots/dark-2-scan.png" alt="Scanning: live count of chats checked, read-only">
+      </picture>
+      <br><sub>The scan only reads</sub>
+    </td>
+    <td align="center">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/light-5-deleting.png">
+        <img src="docs/screenshots/dark-5-deleting.png" alt="Deleting: progress counter and bar, each chat checked again first">
+      </picture>
+      <br><sub>Each chat is checked again first</sub>
+    </td>
+    <td align="center">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/light-6-summary.png">
+        <img src="docs/screenshots/dark-6-summary.png" alt="Summary: deleted, skipped and failed counts">
+      </picture>
+      <br><sub>A clear summary at the end</sub>
+    </td>
+  </tr>
+</table>
+
+<p align="center"><sub>Screenshots use sample data. They follow your GitHub theme; the app follows your system's light or dark setting.</sub></p>
+
+## Why
+
+Each time someone in your contacts joins Telegram, a new chat appears holding a single line: *"joined Telegram"*. Hundreds of these can pile up between your real conversations, and clearing them one at a time takes a long time.
+
+Sift finds them, shows them to you, and removes the ones you choose.
+
+## What it does, and what it doesn't
+
+- **Lists only exact matches.** A chat qualifies only when its one and only message is Telegram's join notice. Sift checks the message *type*, not its text, so a chat where anyone has written a word is never listed.
+- **Reads before it removes.** The scan is read-only. Nothing changes until you review the list and confirm.
+- **Lets you choose.** Every chat starts selected, and you can untick any you want to keep.
+- **Checks again before each delete.** If someone wrote after the scan, that chat is skipped and reported.
+- **Removes for you only.** The other person's copy stays, and your contacts aren't touched.
+- **Respects Telegram's limits.** About one chat per second. If Telegram asks Sift to wait, you see a countdown and it carries on by itself.
+- **Includes deleted accounts.** Join-notice chats from accounts that were later deleted are listed as "Deleted Account".
+- **Skips everything else.** Groups, channels, bots and Saved Messages are never listed.
+
+## Privacy
+
+- **Everything runs on your computer.** Sift has no servers, no accounts, no analytics and no tracking. It only talks to Telegram.
+- **Your login stays in your system's secure storage**: Keychain on macOS, Credential Manager on Windows. Your password is never saved.
+- **"Log out and remove session"** ends Sift's session with Telegram and deletes it from your computer.
+- **The code is open.** You can read exactly what Sift does in [`src-tauri/src/telegram.rs`](src-tauri/src/telegram.rs) and [`detect.rs`](src-tauri/src/detect.rs).
+
+## Install
+
+Download the latest version from **[Releases](https://github.com/hystericmoon/sift/releases/latest)**.
+
+**macOS 12 or later** (Apple Silicon and Intel)
+1. Download `Sift_x.y.z_universal.dmg` and open it.
+2. Drag **Sift** into **Applications**.
+3. Sift isn't code-signed yet. If macOS blocks the first launch, open **System Settings → Privacy & Security** and click **Open Anyway**.
+
+**Windows 10 or later**
+1. Download `Sift_x.y.z_x64-setup.exe` and run it. No admin rights are needed.
+2. Sift isn't code-signed yet. If SmartScreen appears, click **More info → Run anyway**.
+
+**To uninstall**, first choose **Log out and remove session** in Sift, then remove the app as usual.
+
+## FAQ
+
+**Will the other person notice?**
+No. The chat is removed from your side only. Nothing is sent to them.
+
+**Will I lose contacts?**
+No. Sift only removes the chat; your contact list isn't touched.
+
+**What if I change my mind halfway?**
+Press **Stop after this chat** at any time. The summary shows exactly what was removed, and the rest stays as it was.
+
+**Can it undo a delete?**
+No, and the confirm step says so. Removed chats can't be brought back. Since each one held only a join notice, nothing else is lost.
+
+**Why do I log in with my phone number?**
+Sift talks to Telegram directly, the same way Telegram's own apps do, so it needs to log in to your account. The login code arrives in your Telegram app, and if you use two-step verification, Sift asks for that password too.
+
+## Built with
+
+[Tauri 2](https://tauri.app) (Rust) · [grammers](https://codeberg.org/Lonami/grammers) for Telegram's MTProto protocol · React and TypeScript · [Geist](https://vercel.com/font) and [Slackey](https://fonts.google.com/specimen/Slackey) fonts. The macOS download is about 5 MB.
+
+Want to build it yourself or contribute? See **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.
+
+## License
+
+[MIT](LICENSE) © 2026 Hosni Rachmani
 
 Sift uses the Telegram API and is not affiliated with Telegram.
-
-- **Read-only until you confirm.** The scan only reads. Nothing is deleted until you review the list and confirm.
-- **Exact match.** A chat qualifies only if its single message is Telegram's `MessageActionContactSignUp` service action. Sift never matches on message text.
-- **For you only.** Deletes use `messages.deleteHistory` with `revoke: false`, so the other person's copy and your contacts stay.
-- **Local.** There are no servers, telemetry or analytics. The login session lives in the OS credential store.
-
-## Download
-
-Get the latest version from the [Releases page](../../releases/latest):
-
-- **macOS 12 or later** (Apple Silicon and Intel): `Sift_x.y.z_universal.dmg`. Open it and drag Sift into Applications.
-- **Windows 10 or later**: `Sift_x.y.z_x64-setup.exe`. Run it; no admin rights needed.
-
-The installers aren't code-signed yet. On macOS, if the first launch is blocked, open System Settings → Privacy & Security and click **Open Anyway**. On Windows, if SmartScreen appears, click **More info → Run anyway**.
-
-To uninstall, first use **Log out and remove session** in Sift, then remove the app as usual.
-
-## About this project
-
-The product brief is in [docs/SIFT_BRIEF.md](docs/SIFT_BRIEF.md). The Python script the detection logic was ported from is [docs/tg_join_cleaner.py](docs/tg_join_cleaner.py).
-
-## Stack
-
-| Layer | Choice |
-| --- | --- |
-| Shell | Tauri 2: Rust back-end, system WebView (WKWebView on macOS, WebView2 on Windows) |
-| Telegram | [grammers](https://codeberg.org/Lonami/grammers) 0.11 (MTProto, by the author of Telethon) |
-| UI | React 19 + TypeScript + Vite |
-| Session storage | `keyring`: macOS Keychain, Windows Credential Manager |
-| Fonts | Geist, Geist Mono, Slackey, bundled in `src/assets/fonts` (OFL) |
-
-The Rust side owns all Telegram access. The page can only call the commands in [src-tauri/src/lib.rs](src-tauri/src/lib.rs), and it never sees the session or the API keys.
-
-## Setup
-
-1. Install Node 22+ and Rust (`rustup`, stable).
-2. `npm install`
-3. Copy `.env.example` to `.env` and fill in `SIFT_API_ID` and `SIFT_API_HASH` from [my.telegram.org](https://my.telegram.org) → API development tools. `.env` is git-ignored, and so is any `.env.*` copy.
-
-The keys are compiled into the binary by [src-tauri/build.rs](src-tauri/build.rs). In CI they come from repository secrets with the same names.
-
-## Develop
-
-```bash
-npm run tauri dev        # the real app, talking to Telegram (dry run, see below)
-npm run dev              # UI only, in a browser, with fake data
-npm test                 # TypeScript unit tests (Vitest)
-cargo test --manifest-path src-tauri/Cargo.toml   # Rust unit tests
-```
-
-### Dry run
-
-Development builds never delete anything. They run every step, including the re-check and pacing, but skip the delete call itself. A "Dry run · nothing is deleted" badge appears on every screen where a delete could happen.
-
-| Build | Default | Override |
-| --- | --- | --- |
-| `tauri dev` (debug) | dry run | `SIFT_DRY_RUN=0 npm run tauri dev` deletes for real |
-| `tauri build` (release) | deletes for real | `SIFT_DRY_RUN=1` forces a dry run |
-
-Only run a real delete against an account when its owner has explicitly agreed.
-
-### Keychain prompts on macOS
-
-Unsigned builds get a new code signature on every rebuild. macOS may then ask whether Sift can use its saved login in the Keychain. Choose "Always Allow", or deny it and log in again. Signed release builds keep one identity, so users won't see this.
-
-### Reviewing screens with fake data
-
-`npm run dev` opens the UI at http://localhost:1420 with a fake back-end ([src/lib/mock.ts](src/lib/mock.ts)). It never talks to Telegram and is excluded from production builds. Login code `12345`, 2FA password `sift`. URL options:
-
-| URL | Shows |
-| --- | --- |
-| `?mock=results&session=1` | 12 matches, skipping login |
-| `?mock=many&session=1` | 165 matches |
-| `?mock=empty&session=1` | Empty state |
-| `?mock=ratelimit&session=1` | Rate-limit countdown during scan and delete |
-| `?mock=offline` | Network error at login |
-| `&dry=0` | Real-delete wording |
-
-## Build installers
-
-```bash
-# macOS, universal (Apple Silicon + Intel). Needs: rustup target add x86_64-apple-darwin
-CI=true npm run tauri build -- --target universal-apple-darwin --bundles app,dmg
-# → src-tauri/target/universal-apple-darwin/release/bundle/dmg/Sift_0.1.0_universal.dmg
-```
-
-Windows installers are built on Windows or in CI: [.github/workflows/build.yml](.github/workflows/build.yml) tests, then builds the macOS `.dmg` and the Windows NSIS `.exe` as downloadable artifacts. Add `SIFT_API_ID` and `SIFT_API_HASH` as repository secrets first.
-
-Builds are **unsigned** for now. On macOS, a downloaded copy is blocked on first launch: open System Settings → Privacy & Security and click "Open Anyway" (a copy built on the same Mac usually opens directly). On Windows, SmartScreen shows "More info → Run anyway".
-
-## How it works
-
-```
-src-tauri/src/
-  detect.rs         Detection rules (ported 1:1 from the Python script) + categories
-  telegram.rs       Login, scan, avatars, delete with re-check, rate limits
-  session_store.rs  Session in the OS credential store
-  lib.rs            Tauri commands; the only API the page can call
-src/
-  screens/          Intro → Login → Scan → Results → (Confirm) → Deleting → Summary
-  components/       Avatar, ConfirmDialog, DryRunBadge
-  lib/              Typed bridge, copy and formatting, selection logic, fake back-end
-  styles/           Brand tokens (dark default, light follows the OS) and base styles
-```
-
-**Detection rules** ([detect.rs](src-tauri/src/detect.rs)):
-1. Only private chats with real users. Groups, channels, bots and Saved Messages are skipped.
-2. The latest message must be the `MessageActionContactSignUp` service action.
-3. Fetching 2 messages must return only that one.
-4. Deleted accounts that meet 1–3 are included.
-
-**Categories.** The results screen, scan and re-check all work per `Category`. Today there is one, `JoinedOnly`. Planned filters ("deleted accounts with history", "inactive for N months") become new variants with their own `may_match` / `confirm` rules and copy in [format.ts](src/lib/format.ts).
-
-**Deleting.** For each selected chat, Sift fetches the latest 2 messages and runs the category's rule again. If the chat changed, it's skipped and reported. Then it calls `messages.deleteHistory` (`revoke: false`). Chats are paced at about one per second. A `FLOOD_WAIT` shows a countdown and resumes by itself. "Stop after this chat" stops cleanly, and three network failures in a row stop the run.
-
-**Session.** Only the home datacenter id, its address and its auth key are saved, as one Keychain / Credential Manager entry (service `app.sift.desktop`). "Log out and remove session" signs the session out with Telegram and deletes that entry.
-
-## Telegram API rules followed
-
-- Sift has its own `api_id` / `api_hash`, never shown to or entered by users.
-- The window title and product name are "Sift", never containing "Telegram". There's no Telegram logo and no Telegram blue.
-- The intro screen and the store description say: "Sift uses the Telegram API and is not affiliated with Telegram."
-
-## Before the first public release
-
-- [ ] Pick the final bundle identifier in `src-tauri/tauri.conf.json` (now `app.sift.desktop`; use a reverse-DNS name you own) and the matching `SERVICE` in `session_store.rs`. Changing it later logs existing users out once.
-- [ ] Set `publisher` and `copyright` in `tauri.conf.json`.
-- [ ] Code signing and notarization: an Apple Developer ID plus notarytool, and a Windows code-signing certificate.
-- [ ] Test a real delete on an account whose owner agreed, in a release build or with `SIFT_DRY_RUN=0`.
-- [ ] Store listing: see [docs/STORE_LISTING.md](docs/STORE_LISTING.md).

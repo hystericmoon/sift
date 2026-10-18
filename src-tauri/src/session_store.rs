@@ -12,7 +12,7 @@ use grammers_session::storages::MemorySession;
 use grammers_session::types::DcOption;
 use serde::{Deserialize, Serialize};
 
-const SERVICE: &str = "app.sift.desktop";
+const SERVICE: &str = "io.github.hystericmoon.sift";
 const ACCOUNT: &str = "session";
 
 #[derive(Serialize, Deserialize)]

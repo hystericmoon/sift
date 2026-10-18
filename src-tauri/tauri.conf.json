@@ -2,7 +2,7 @@
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Sift",
   "version": "0.1.0",
-  "identifier": "app.sift.desktop",
+  "identifier": "io.github.hystericmoon.sift",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -29,8 +29,8 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "publisher": "Sift",
-    "copyright": "© 2026 Sift",
+    "publisher": "Hosni Rachmani",
+    "copyright": "© 2026 Hosni Rachmani. MIT License.",
     "category": "Utility",
     "shortDescription": "Removes chats that hold only a join notice.",
     "longDescription": "Sift finds the chats in your Telegram account whose only message is the \"joined Telegram\" notice, lists them for you to review, and removes the ones you choose, for you only. Chats with real messages and your contacts stay untouched. Everything runs on your computer: no servers, no tracking. Sift uses the Telegram API and is not affiliated with Telegram.",

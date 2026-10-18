@@ -5,6 +5,7 @@
 //   mock=results (default) | empty | many | ratelimit | restored | offline
 //   session=1   start as if a saved session exists (skips login)
 //   dry=0       show real-delete copy (the mock never deletes anything)
+//   clean=1     every delete succeeds (for screenshots)
 // Login code: 12345. 2FA password: sift (anything else shows the error).
 // In the delete step, "Budi Santoso" gets a new message (skipped) and
 // "Citra Lestari" fails, so the summary shows both cases.
@@ -122,7 +123,10 @@ export const mockApi: Api = {
       }
       await sleep(scenario === "many" ? 60 : 450);
       const name = chats.find((c) => c.id === id)?.name ?? "";
-      const outcome: Outcome = name.startsWith("Budi")
+      const clean = params.get("clean") === "1";
+      const outcome: Outcome = clean
+        ? { result: "deleted" }
+        : name.startsWith("Budi")
         ? { result: "skipped", reason: { kind: "newMessages" } }
         : name.startsWith("Citra")
           ? { result: "failed", reason: { kind: "telegram", code: "PEER_ID_INVALID" } }
