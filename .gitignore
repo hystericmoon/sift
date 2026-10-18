@@ -1,0 +1,15 @@
+# Telegram API credentials: never commit (covers stray copies like .env.rtf)
+.env
+.env.*
+!.env.example
+
+# Login sessions: these grant full access to the account
+*.session
+*.session-*
+
+# Build output
+target/
+node_modules/
+dist/
+src-tauri/gen/schemas/
+.DS_Store

@@ -1,0 +1,83 @@
+/* Brand tokens from docs/SIFT_BRIEF.md. Dark is the default; light follows the OS. */
+
+@font-face {
+  font-family: "Slackey";
+  src: url("../assets/fonts/slackey-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: "Geist";
+  src: url("../assets/fonts/Geist-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist";
+  src: url("../assets/fonts/Geist-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist";
+  src: url("../assets/fonts/Geist-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist Mono";
+  src: url("../assets/fonts/GeistMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist Mono";
+  src: url("../assets/fonts/GeistMono-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+  --bg: #0E0F10;             /* Ink */
+  --surface: #17191B;        /* Graphite */
+  --divider: #2A2D30;        /* Rule, decorative only */
+  --border-control: #70767C; /* inputs, checkboxes: 4.2:1 */
+  --text-secondary: #9BA1A7; /* Mist: 7.4:1 */
+  --text: #ECEDEE;           /* Bone: 16.4:1 */
+  --accent: #C6F432;         /* Signal: focus rings, primary fills */
+  --accent-text: #C6F432;
+  --on-accent: #0E0F10;      /* Ink text on Signal */
+  --danger: #FF6B47;         /* Ember */
+  --on-danger: #0E0F10;
+
+  --font-wordmark: "Slackey", system-ui, sans-serif;
+  --font-sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --radius: 10px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --bg: #F4F4F2;             /* Paper */
+    --surface: #FFFFFF;
+    --divider: #E2E3E1;
+    --border-control: #7A8086; /* 3.6:1 */
+    --text-secondary: #5B6066; /* Slate: 5.8:1 */
+    --text: #0E0F10;
+    --accent: #4A6600;         /* Signal Deep; Signal fails on light */
+    --accent-text: #4A6600;
+    --on-accent: #FFFFFF;      /* white on Signal Deep: 6.9:1 */
+    --danger: #B8361A;         /* Ember Deep */
+    --on-danger: #FFFFFF;
+  }
+}

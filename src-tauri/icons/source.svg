@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Placeholder until milestone 4: the final icon is a Slackey "S" in Bone on Graphite. -->
+  <rect width="1024" height="1024" rx="224" fill="#17191B"/>
+  <path d="M640 330c-30-40-80-62-140-62-90 0-150 48-150 118 0 150 330 100 330 258 0 78-70 132-170 132-72 0-132-28-170-78" fill="none" stroke="#ECEDEE" stroke-width="96" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

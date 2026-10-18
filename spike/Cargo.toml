@@ -1,0 +1,19 @@
+[package]
+name = "sift-spike"
+version = "0.0.1"
+edition = "2024"
+publish = false
+description = "Read-only check that grammers can do everything Sift needs."
+
+[dependencies]
+grammers-client = "0.11"
+grammers-session = "0.11"
+grammers-mtsender = "0.11"
+tokio = { version = "1", features = ["rt", "macros", "time"] }
+dotenvy = "0.15"
+rpassword = "7"
+
+[profile.release]
+strip = true
+lto = true
+opt-level = "z"

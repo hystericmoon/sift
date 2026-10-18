@@ -1,0 +1,30 @@
+[package]
+name = "sift"
+version = "0.1.0"
+edition = "2024"
+publish = false
+description = "Removes chats that hold only a join notice."
+
+[lib]
+name = "sift_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.7", features = [] }
+
+[dependencies]
+tauri = { version = "2.12", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["sync", "time"] }
+grammers-client = "0.11"
+grammers-mtsender = "0.11"
+grammers-session = { version = "0.11", default-features = false }
+keyring = "4.2"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+opt-level = "s"
+panic = "abort"

@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "The main window. Sift's own commands only; no file system, shell or network access from the UI.",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}
