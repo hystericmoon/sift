@@ -78,7 +78,7 @@ CI=true npm run tauri build -- --target universal-apple-darwin --bundles app,dmg
 
 Windows installers are built on Windows or in CI: [.github/workflows/build.yml](.github/workflows/build.yml) tests, then builds the macOS `.dmg` and the Windows NSIS `.exe` as downloadable artifacts. Add `SIFT_API_ID` and `SIFT_API_HASH` as repository secrets first.
 
-Builds are **unsigned** for now. On macOS, the first launch needs right-click → Open. On Windows, SmartScreen shows "More info → Run anyway".
+Builds are **unsigned** for now. On macOS, a downloaded copy is blocked on first launch: open System Settings → Privacy & Security and click "Open Anyway" (a copy built on the same Mac usually opens directly). On Windows, SmartScreen shows "More info → Run anyway".
 
 ## How it works
 
