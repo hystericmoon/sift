@@ -9,6 +9,19 @@ Sift uses the Telegram API and is not affiliated with Telegram.
 - **For you only.** Deletes use `messages.deleteHistory` with `revoke: false`, so the other person's copy and your contacts stay.
 - **Local.** There are no servers, telemetry or analytics. The login session lives in the OS credential store.
 
+## Download
+
+Get the latest version from the [Releases page](../../releases/latest):
+
+- **macOS 12 or later** (Apple Silicon and Intel): `Sift_x.y.z_universal.dmg`. Open it and drag Sift into Applications.
+- **Windows 10 or later**: `Sift_x.y.z_x64-setup.exe`. Run it; no admin rights needed.
+
+The installers aren't code-signed yet. On macOS, if the first launch is blocked, open System Settings → Privacy & Security and click **Open Anyway**. On Windows, if SmartScreen appears, click **More info → Run anyway**.
+
+To uninstall, first use **Log out and remove session** in Sift, then remove the app as usual.
+
+## About this project
+
 The product brief is in [docs/SIFT_BRIEF.md](docs/SIFT_BRIEF.md). The Python script the detection logic was ported from is [docs/tg_join_cleaner.py](docs/tg_join_cleaner.py).
 
 ## Stack

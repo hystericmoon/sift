@@ -1,6 +1,9 @@
 # Tests, then builds unsigned installers for macOS (universal .dmg) and
 # Windows (.exe, NSIS). Code signing comes later.
 #
+# Releasing: push a tag like v0.1.0. The installers are attached to a DRAFT
+# GitHub Release; review it and click Publish to make it downloadable.
+#
 # Required repository secrets (Settings → Secrets and variables → Actions):
 #   SIFT_API_ID, SIFT_API_HASH   from my.telegram.org; baked into the binary.
 
@@ -40,6 +43,8 @@ jobs:
 
   build:
     needs: test
+    # Pull requests (including from forks) only run tests: no secrets, no installers.
+    if: github.event_name != 'pull_request'
     strategy:
       fail-fast: false
       matrix:
@@ -84,3 +89,29 @@ jobs:
           name: sift-${{ matrix.os }}
           path: ${{ matrix.artifacts }}
           if-no-files-found: error
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - name: Create draft release with both installers
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$TAG" artifacts/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --draft \
+            --title "Sift $TAG" \
+            --notes "Sift uses the Telegram API and is not affiliated with Telegram.
+
+          **macOS** (12 or later, Apple Silicon and Intel): download the .dmg, open it and drag Sift into Applications. These builds are not yet signed: if macOS blocks the first launch, open System Settings → Privacy & Security and click Open Anyway.
+
+          **Windows** (10 or later): download the .exe and run it. These builds are not yet signed: if SmartScreen appears, click More info → Run anyway."
