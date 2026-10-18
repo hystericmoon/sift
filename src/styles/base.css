@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+html {
+  /* Keeps keyboard-focused rows clear of the sticky action bar. */
+  scroll-padding-bottom: 200px;
+}
+
 html,
 body,
 #root {
@@ -235,4 +240,218 @@ ol {
     transition: none !important;
     animation: none !important;
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* Milestones 2–3: results, dialog, progress, summary                  */
+
+.stack-tight {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.badge {
+  align-self: flex-start;
+  padding: var(--space-1) var(--space-2);
+  border-radius: 6px;
+  border: 1px solid var(--border-control);
+  color: var(--text-secondary);
+}
+
+.button--danger {
+  background: var(--danger);
+  color: var(--on-danger);
+}
+.button--danger:not(:disabled, [aria-disabled="true"]):hover {
+  filter: brightness(1.08);
+}
+
+/* Results */
+.screen--with-action-bar {
+  padding-bottom: 0;
+}
+.category {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.list-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+.list-toolbar-buttons {
+  display: flex;
+  gap: var(--space-4);
+}
+.list-toolbar .link-button,
+.action-bar-secondary .link-button {
+  min-height: 32px;
+  align-self: center;
+}
+
+.chat-row--selectable {
+  cursor: pointer;
+  padding: 0 var(--space-2);
+  margin: 0 calc(-1 * var(--space-2));
+  border-radius: 6px;
+}
+.chat-row--selectable:hover {
+  background: var(--surface);
+}
+/* Only the avatar dims: names and dates keep full contrast (≥ 4.5:1). */
+.chat-row--selectable.is-unchecked .avatar {
+  opacity: 0.5;
+}
+.chat-list li {
+  border-bottom: 1px solid var(--divider);
+}
+.chat-list li > .chat-row,
+.chat-list li.chat-row {
+  border-bottom: 0;
+}
+.chat-row--outcome {
+  padding: var(--space-2) 0;
+}
+.chat-row-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Checkbox: 20px, control border 4.2:1 (dark) / 3.6:1 (light), Signal fill when checked. */
+.checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  border: 1.5px solid var(--border-control);
+  border-radius: 5px;
+  background: transparent;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+}
+.checkbox::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: var(--on-accent);
+  clip-path: polygon(14% 52%, 0 66%, 38% 100%, 100% 22%, 86% 8%, 37% 70%);
+  transform: scale(0);
+  transition: transform 80ms ease-out;
+}
+.checkbox:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.checkbox:checked::before {
+  transform: scale(1);
+}
+
+.avatar {
+  object-fit: cover;
+}
+.avatar--large {
+  width: 44px;
+  height: 44px;
+  font-size: 14px;
+}
+
+.action-bar {
+  position: sticky;
+  bottom: 0;
+  margin: auto calc(-1 * var(--space-6)) 0;
+  padding: var(--space-4) var(--space-6) var(--space-5);
+  background: var(--bg);
+  border-top: 1px solid var(--divider);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.action-bar-secondary {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* Dialog */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--space-5);
+  background: rgb(14 15 16 / 0.72);
+  z-index: 10;
+}
+.dialog {
+  width: min(420px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--divider);
+  box-shadow: 0 24px 64px rgb(0 0 0 / 0.4);
+}
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-top: var(--space-2);
+}
+
+/* Deleting */
+.progress {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--divider);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 200ms ease-out;
+}
+.current-chat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+}
+
+/* Summary */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  margin: 0;
+}
+.stat {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--divider);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.stat dd {
+  margin: 0;
+}
+.stat-value {
+  font: 600 24px/32px var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.stat-value--danger {
+  color: var(--danger);
 }

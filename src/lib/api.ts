@@ -16,45 +16,102 @@ export type UiError =
   | { kind: "network" }
   | { kind: "other"; message: string };
 
+export interface AppInfo {
+  /** True when deletes are simulated (always in development builds). */
+  dryRun: boolean;
+  version: string;
+}
+
 export type LoginStep = { step: "done" } | { step: "passwordNeeded"; hint: string | null };
 
 export type ScanEvent =
   | { event: "progress"; checked: number }
   | { event: "rateLimited"; seconds: number };
 
+/** Kinds of chats Sift can clear. More filters will be added here. */
+export type Category = "joinedOnly";
+
 export interface ChatSummary {
   id: string;
   /** Empty for deleted accounts; the UI shows "Deleted Account". */
   name: string;
   deletedAccount: boolean;
+  hasPhoto: boolean;
   /** Unix seconds of the join notice. */
   date: number;
 }
 
+export interface CategoryResult {
+  category: Category;
+  chats: ChatSummary[];
+}
+
 export interface ScanResult {
   checked: number;
-  joinOnly: ChatSummary[];
+  categories: CategoryResult[];
+}
+
+export interface AvatarEvent {
+  id: string;
+  dataUrl: string;
+}
+
+export type SkipReason = { kind: "newMessages" } | { kind: "alreadyGone" } | { kind: "notInScan" };
+export type FailReason = { kind: "network" } | { kind: "telegram"; code: string };
+
+export type Outcome =
+  | { result: "deleted" }
+  | { result: "skipped"; reason: SkipReason }
+  | { result: "failed"; reason: FailReason };
+
+export type DeleteEvent =
+  | { event: "started"; index: number; total: number; id: string }
+  | { event: "finished"; index: number; total: number; id: string; outcome: Outcome }
+  | { event: "rateLimited"; seconds: number };
+
+export interface ChatOutcome {
+  id: string;
+  outcome: Outcome;
+}
+
+export interface DeleteReport {
+  dryRun: boolean;
+  total: number;
+  deleted: number;
+  notDeleted: ChatOutcome[];
+  stopped: boolean;
+  connectionLost: boolean;
 }
 
 export interface Api {
+  appInfo(): Promise<AppInfo>;
   restoreSession(): Promise<boolean>;
   requestCode(phone: string): Promise<void>;
   submitCode(code: string): Promise<LoginStep>;
   submitPassword(password: string): Promise<void>;
   scan(onEvent: (event: ScanEvent) => void): Promise<ScanResult>;
+  loadAvatars(onEvent: (event: AvatarEvent) => void): Promise<void>;
+  deleteChats(ids: string[], onEvent: (event: DeleteEvent) => void): Promise<DeleteReport>;
+  stopDeleting(): Promise<void>;
   logOut(): Promise<void>;
 }
 
+function channel<T>(onEvent: (event: T) => void): Channel<T> {
+  const c = new Channel<T>();
+  c.onmessage = onEvent;
+  return c;
+}
+
 const tauriApi: Api = {
+  appInfo: () => invoke("app_info"),
   restoreSession: () => invoke("restore_session"),
   requestCode: (phone) => invoke("request_code", { phone }),
   submitCode: (code) => invoke("submit_code", { code }),
   submitPassword: (password) => invoke("submit_password", { password }),
-  scan: (onEvent) => {
-    const channel = new Channel<ScanEvent>();
-    channel.onmessage = onEvent;
-    return invoke("scan", { onEvent: channel });
-  },
+  scan: (onEvent) => invoke("scan", { onEvent: channel(onEvent) }),
+  loadAvatars: (onEvent) => invoke("load_avatars", { onEvent: channel(onEvent) }),
+  deleteChats: (ids, onEvent) => invoke("delete_chats", { ids, onEvent: channel(onEvent) }),
+  stopDeleting: () => invoke("stop_deleting"),
   logOut: () => invoke("log_out"),
 };
 
