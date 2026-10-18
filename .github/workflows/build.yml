@@ -1,0 +1,86 @@
+# Tests, then builds unsigned installers for macOS (universal .dmg) and
+# Windows (.exe, NSIS). Code signing comes later.
+#
+# Required repository secrets (Settings → Secrets and variables → Actions):
+#   SIFT_API_ID, SIFT_API_HASH   from my.telegram.org; baked into the binary.
+
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: npm ci
+      - run: npx tsc
+      - run: npm test
+      - run: cargo test --manifest-path src-tauri/Cargo.toml
+
+  build:
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            rust-targets: aarch64-apple-darwin,x86_64-apple-darwin
+            args: --target universal-apple-darwin --bundles app,dmg
+            artifacts: |
+              src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
+          - os: windows-latest
+            rust-targets: ""
+            args: --bundles nsis
+            artifacts: |
+              src-tauri/target/release/bundle/nsis/*.exe
+    runs-on: ${{ matrix.os }}
+    env:
+      SIFT_API_ID: ${{ secrets.SIFT_API_ID }}
+      SIFT_API_HASH: ${{ secrets.SIFT_API_HASH }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust-targets }}
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - name: Check API keys are configured
+        shell: bash
+        run: |
+          if [ -z "$SIFT_API_ID" ] || [ -z "$SIFT_API_HASH" ]; then
+            echo "::error::Add SIFT_API_ID and SIFT_API_HASH as repository secrets."
+            exit 1
+          fi
+      - run: npm ci
+      - run: npx tauri build ${{ matrix.args }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sift-${{ matrix.os }}
+          path: ${{ matrix.artifacts }}
+          if-no-files-found: error

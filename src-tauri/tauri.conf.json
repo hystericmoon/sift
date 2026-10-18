@@ -12,11 +12,13 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "Sift",
         "width": 560,
         "height": 760,
         "minWidth": 420,
         "minHeight": 560,
+        "center": true,
         "backgroundColor": "#0E0F10"
       }
     ],
@@ -27,6 +29,19 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"]
+    "publisher": "Sift",
+    "copyright": "© 2026 Sift",
+    "category": "Utility",
+    "shortDescription": "Removes chats that hold only a join notice.",
+    "longDescription": "Sift finds the chats in your Telegram account whose only message is the \"joined Telegram\" notice, lists them for you to review, and removes the ones you choose, for you only. Chats with real messages and your contacts stay untouched. Everything runs on your computer: no servers, no tracking. Sift uses the Telegram API and is not affiliated with Telegram.",
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
+    "macOS": {
+      "minimumSystemVersion": "12.0"
+    },
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser"
+      }
+    }
   }
 }

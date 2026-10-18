@@ -2,7 +2,6 @@
 // session or API keys; it only gets these summaries and errors.
 
 import { Channel, invoke } from "@tauri-apps/api/core";
-import { mockApi } from "./mock";
 
 export type UiError =
   | { kind: "missingApiKeys" }
@@ -115,12 +114,23 @@ const tauriApi: Api = {
   logOut: () => invoke("log_out"),
 };
 
+/** Loads the fake backend on first use, so it never reaches production bundles. */
+function devMockApi(): Api {
+  const load = () => import("./mock").then((module) => module.mockApi);
+  return new Proxy({} as Api, {
+    get:
+      (_target, key: string) =>
+      (...args: unknown[]) =>
+        load().then((mock) => (mock[key as keyof Api] as (...a: unknown[]) => unknown)(...args)),
+  });
+}
+
 const inTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 
 // Outside the app window (plain `npm run dev` in a browser), use fake data so
 // the screens can be reviewed without a Telegram account. Production builds
-// always use the real bridge, and the mock is dropped from the bundle.
-export const api: Api = inTauri || !import.meta.env.DEV ? tauriApi : mockApi;
+// always use the real bridge.
+export const api: Api = inTauri || !import.meta.env.DEV ? tauriApi : devMockApi();
 
 export function isUiError(value: unknown): value is UiError {
   return typeof value === "object" && value !== null && "kind" in value;

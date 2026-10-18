@@ -50,6 +50,8 @@
   --on-accent: #0E0F10;      /* Ink text on Signal */
   --danger: #FF6B47;         /* Ember */
   --on-danger: #0E0F10;
+  --backdrop: rgb(0 0 0 / 0.62);
+  --shadow: 0 24px 64px rgb(0 0 0 / 0.45);
 
   --font-wordmark: "Slackey", system-ui, sans-serif;
   --font-sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -79,5 +81,7 @@
     --on-accent: #FFFFFF;      /* white on Signal Deep: 6.9:1 */
     --danger: #B8361A;         /* Ember Deep */
     --on-danger: #FFFFFF;
+    --backdrop: rgb(14 15 16 / 0.32);
+    --shadow: 0 24px 64px rgb(14 15 16 / 0.18);
   }
 }

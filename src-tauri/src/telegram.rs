@@ -24,6 +24,8 @@ use crate::session_store;
 
 /// Time between the start of one delete and the next.
 const DELETE_PACE: Duration = Duration::from_secs(1);
+/// Upper bound on deleteHistory batches for one chat.
+const MAX_DELETE_BATCHES: usize = 20;
 /// Stop deleting after this many network failures in a row.
 const MAX_NETWORK_FAILURES: u32 = 3;
 /// Profile photos larger than this are skipped (the small size is ~10 KB).
@@ -188,6 +190,23 @@ pub struct DeleteReport {
     pub stopped: bool,
     /// Stopped early after repeated network failures.
     pub connection_lost: bool,
+}
+
+impl DeleteReport {
+    /// Adds one chat's outcome. Returns true when the chat no longer exists,
+    /// so it should leave the list of scan matches.
+    fn record(&mut self, id: &str, outcome: &Outcome) -> bool {
+        match outcome {
+            Outcome::Deleted => {
+                self.deleted += 1;
+                true
+            }
+            other => {
+                self.not_deleted.push(ChatOutcome { id: id.to_string(), outcome: other.clone() });
+                matches!(other, Outcome::Skipped { reason: SkipReason::AlreadyGone })
+            }
+        }
+    }
 }
 
 #[derive(Serialize)]
@@ -581,16 +600,8 @@ pub async fn delete_chats(
             None => Outcome::Skipped { reason: SkipReason::NotInScan },
             Some(c) => delete_one(&client, c, dry_run, &on_wait).await,
         };
-        match &outcome {
-            Outcome::Deleted => {
-                report.deleted += 1;
-                removed.push(id.clone());
-            }
-            Outcome::Skipped { reason: SkipReason::AlreadyGone } => {
-                removed.push(id.clone());
-                report.not_deleted.push(ChatOutcome { id: id.clone(), outcome: outcome.clone() });
-            }
-            _ => report.not_deleted.push(ChatOutcome { id: id.clone(), outcome: outcome.clone() }),
+        if report.record(&id, &outcome) {
+            removed.push(id.clone());
         }
         network_failures = match &outcome {
             Outcome::Failed { reason: FailReason::Network } => network_failures + 1,
@@ -653,7 +664,9 @@ async fn delete_one(client: &Client, candidate: &Candidate, dry_run: bool, on_wa
 /// Removes the chat for this account only. `revoke: false` leaves the other
 /// person's copy alone; contacts are not touched.
 async fn delete_history(client: &Client, peer: PeerRef) -> Result<(), InvocationError> {
-    loop {
+    // A join-only chat needs one call; the cap only guards against a server
+    // that keeps reporting more to delete.
+    for _ in 0..MAX_DELETE_BATCHES {
         let tl::enums::messages::AffectedHistory::History(affected) = client
             .invoke(&tl::functions::messages::DeleteHistory {
                 just_clear: false,
@@ -666,9 +679,10 @@ async fn delete_history(client: &Client, peer: PeerRef) -> Result<(), Invocation
             .await?;
         // Telegram deletes in batches; a positive offset means call again.
         if affected.offset <= 0 {
-            return Ok(());
+            break;
         }
     }
+    Ok(())
 }
 
 // ---------------------------------------------------------------------------
@@ -735,6 +749,33 @@ mod tests {
         assert_eq!(image_mime(&[0x89, b'P', b'N', b'G', 0, 0]), "image/png");
         assert_eq!(image_mime(b"RIFF\0\0\0\0WEBPVP8 "), "image/webp");
         assert_eq!(image_mime(&[0xFF, 0xD8, 0xFF]), "image/jpeg");
+    }
+
+    #[test]
+    fn report_counts_each_outcome_once() {
+        let mut report = DeleteReport {
+            dry_run: true,
+            total: 4,
+            deleted: 0,
+            not_deleted: Vec::new(),
+            stopped: false,
+            connection_lost: false,
+        };
+        assert!(report.record("1", &Outcome::Deleted));
+        assert!(!report.record("2", &Outcome::Skipped { reason: SkipReason::NewMessages }));
+        assert!(report.record("3", &Outcome::Skipped { reason: SkipReason::AlreadyGone }));
+        assert!(!report.record("4", &Outcome::Failed { reason: FailReason::Network }));
+        assert_eq!(report.deleted, 1);
+        let ids: Vec<_> = report.not_deleted.iter().map(|c| c.id.as_str()).collect();
+        assert_eq!(ids, ["2", "3", "4"]);
+    }
+
+    #[test]
+    fn dry_run_follows_build_type_and_env() {
+        // Without SIFT_DRY_RUN, test builds (debug) are dry runs.
+        if std::env::var("SIFT_DRY_RUN").is_err() {
+            assert_eq!(dry_run(), cfg!(debug_assertions));
+        }
     }
 
     #[test]

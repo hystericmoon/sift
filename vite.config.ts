@@ -12,7 +12,8 @@ export default defineConfig({
   },
   envPrefix: ["VITE_", "TAURI_ENV_"],
   build: {
-    target: "es2022",
+    // macOS 12+ (WKWebView ≈ Safari 15) and Windows WebView2 (evergreen Chromium).
+    target: ["es2021", "safari15", "chrome105"],
     sourcemap: false,
   },
 });

@@ -31,6 +31,15 @@ input {
   user-select: text;
 }
 
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+html {
+  scrollbar-color: var(--border-control) transparent;
+}
+
 h1,
 h2,
 p,
@@ -388,7 +397,7 @@ ol {
   display: grid;
   place-items: center;
   padding: var(--space-5);
-  background: rgb(14 15 16 / 0.72);
+  background: var(--backdrop);
   z-index: 10;
 }
 .dialog {
@@ -400,7 +409,7 @@ ol {
   border-radius: 14px;
   background: var(--surface);
   border: 1px solid var(--divider);
-  box-shadow: 0 24px 64px rgb(0 0 0 / 0.4);
+  box-shadow: var(--shadow);
 }
 .dialog-actions {
   display: flex;
