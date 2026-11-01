@@ -131,7 +131,7 @@ Sift talks to Telegram directly, the same way Telegram's own apps do, so it need
 
 [Tauri 2](https://tauri.app) (Rust) · [grammers](https://codeberg.org/Lonami/grammers) for Telegram's MTProto protocol · React and TypeScript · [Geist](https://vercel.com/font) and [Slackey](https://fonts.google.com/specimen/Slackey) fonts. The macOS download is about 5 MB.
 
-Want to build it yourself or contribute? See **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.
+Want to build it yourself or contribute? See **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**. Project status and open items: [docs/HANDOFF.md](docs/HANDOFF.md).
 
 ## License
 
